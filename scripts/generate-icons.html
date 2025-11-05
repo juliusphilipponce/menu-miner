@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate PWA Icons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #111827;
+            color: white;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            margin: 10px;
+        }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .icon-item {
+            text-align: center;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+    <h1>MenuMiner PWA Icon Generator</h1>
+    <p>Click "Generate All Icons" to create all required PWA icons.</p>
+    <button onclick="generateAllIcons()">Generate All Icons</button>
+    <div id="container" class="container"></div>
+
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function createIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Background gradient (purple to indigo)
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#9333ea'); // purple-600
+            gradient.addColorStop(1, '#4f46e5'); // indigo-600
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // Add rounded corners for modern look
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.beginPath();
+            const radius = size * 0.225; // 22.5% radius for rounded corners
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.globalCompositeOperation = 'source-over';
+
+            // Draw menu/document icon
+            const iconSize = size * 0.5;
+            const iconX = (size - iconSize) / 2;
+            const iconY = (size - iconSize) / 2;
+
+            // White document/menu shape
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            const docRadius = iconSize * 0.1;
+            ctx.moveTo(iconX + docRadius, iconY);
+            ctx.lineTo(iconX + iconSize - docRadius, iconY);
+            ctx.quadraticCurveTo(iconX + iconSize, iconY, iconX + iconSize, iconY + docRadius);
+            ctx.lineTo(iconX + iconSize, iconY + iconSize - docRadius);
+            ctx.quadraticCurveTo(iconX + iconSize, iconY + iconSize, iconX + iconSize - docRadius, iconY + iconSize);
+            ctx.lineTo(iconX + docRadius, iconY + iconSize);
+            ctx.quadraticCurveTo(iconX, iconY + iconSize, iconX, iconY + iconSize - docRadius);
+            ctx.lineTo(iconX, iconY + docRadius);
+            ctx.quadraticCurveTo(iconX, iconY, iconX + docRadius, iconY);
+            ctx.closePath();
+            ctx.fill();
+
+            // Draw menu lines
+            ctx.fillStyle = '#9333ea'; // purple to match gradient
+            const lineHeight = iconSize * 0.08;
+            const lineSpacing = iconSize * 0.15;
+            const lineMargin = iconSize * 0.15;
+
+            // Three menu lines
+            for (let i = 0; i < 3; i++) {
+                const lineY = iconY + lineMargin + (i * lineSpacing);
+                ctx.fillRect(
+                    iconX + lineMargin,
+                    lineY,
+                    iconSize - (lineMargin * 2),
+                    lineHeight
+                );
+            }
+
+            // Draw pickaxe/mining tool
+            const pickaxeSize = iconSize * 0.4;
+            const pickaxeX = iconX + iconSize - pickaxeSize - (iconSize * 0.1);
+            const pickaxeY = iconY + iconSize - pickaxeSize - (iconSize * 0.1);
+
+            // Pickaxe handle (wooden brown)
+            ctx.fillStyle = '#92400e'; // brown-800
+            ctx.save();
+            ctx.translate(pickaxeX + pickaxeSize / 2, pickaxeY + pickaxeSize / 2);
+            ctx.rotate(-45 * Math.PI / 180); // Rotate 45 degrees
+            ctx.fillRect(-pickaxeSize * 0.08, -pickaxeSize * 0.5, pickaxeSize * 0.16, pickaxeSize);
+            ctx.restore();
+
+            // Pickaxe head (metallic gray)
+            ctx.fillStyle = '#6b7280'; // gray-500
+            ctx.save();
+            ctx.translate(pickaxeX + pickaxeSize / 2, pickaxeY + pickaxeSize / 2);
+            ctx.rotate(-45 * Math.PI / 180);
+
+            // Main pickaxe head body
+            ctx.fillRect(-pickaxeSize * 0.35, -pickaxeSize * 0.55, pickaxeSize * 0.7, pickaxeSize * 0.2);
+
+            // Left pick point
+            ctx.beginPath();
+            ctx.moveTo(-pickaxeSize * 0.35, -pickaxeSize * 0.55);
+            ctx.lineTo(-pickaxeSize * 0.55, -pickaxeSize * 0.45);
+            ctx.lineTo(-pickaxeSize * 0.35, -pickaxeSize * 0.35);
+            ctx.closePath();
+            ctx.fill();
+
+            // Right pick point
+            ctx.beginPath();
+            ctx.moveTo(pickaxeSize * 0.35, -pickaxeSize * 0.55);
+            ctx.lineTo(pickaxeSize * 0.55, -pickaxeSize * 0.45);
+            ctx.lineTo(pickaxeSize * 0.35, -pickaxeSize * 0.35);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.restore();
+
+            // Add sparkle/AI indicator in top right
+            const sparkleSize = size * 0.15;
+            const sparkleX = size - sparkleSize - (size * 0.1);
+            const sparkleY = size * 0.1;
+
+            // Draw sparkle star
+            ctx.fillStyle = '#fbbf24'; // amber-400 for sparkle
+            ctx.beginPath();
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * Math.PI) / 4;
+                const radius = i % 2 === 0 ? sparkleSize / 2 : sparkleSize / 4;
+                const x = sparkleX + sparkleSize / 2 + Math.cos(angle) * radius;
+                const y = sparkleY + sparkleSize / 2 + Math.sin(angle) * radius;
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            return canvas;
+        }
+        
+        function downloadCanvas(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        function generateAllIcons() {
+            const container = document.getElementById('container');
+            container.innerHTML = '';
+            
+            sizes.forEach(size => {
+                const iconItem = document.createElement('div');
+                iconItem.className = 'icon-item';
+                
+                const canvas = createIcon(size);
+                const label = document.createElement('p');
+                label.textContent = `${size}x${size}`;
+                
+                const downloadBtn = document.createElement('button');
+                downloadBtn.textContent = 'Download';
+                downloadBtn.onclick = () => downloadCanvas(canvas, `icon-${size}x${size}.png`);
+                
+                iconItem.appendChild(canvas);
+                iconItem.appendChild(label);
+                iconItem.appendChild(downloadBtn);
+                container.appendChild(iconItem);
+            });
+            
+            alert('Icons generated! Click "Download" on each icon to save them to your downloads folder, then move them to public/icons/');
+        }
+    </script>
+</body>
+</html>
+

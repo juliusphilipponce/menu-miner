@@ -1,0 +1,5 @@
+{
+  "name": "MenuMiner",
+  "description": "Upload a photo of a restaurant menu, and MenuMiner will analyze it, providing insights and identifying popular or trendy dishes with sourced information from Google Search.",
+  "requestFramePermissions": []
+}
